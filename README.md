@@ -5,7 +5,7 @@ Date: 2016-03-26
 
 #Usage 
 
-python GameOfLifePyCUDA.py n n_iter m
+python GameOfLife.py n n_iter m
 
 where:
 
