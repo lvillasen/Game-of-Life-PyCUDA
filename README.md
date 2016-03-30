@@ -5,9 +5,16 @@ Date: 2016-03-26
 
 #Usage 
 
-python GameOfLifePyCUDA.py n n_iter
+python GameOfLifePyCUDA.py n n_iter m
 
-where n is the board size and n_iter the number of iterations
+where:
+
+n is the board size 
+
+n_iter the initial number of iterations
+
+m equal to 1 to plot the board or 0 for no display output 
+
 
 # Prerequisites
 
