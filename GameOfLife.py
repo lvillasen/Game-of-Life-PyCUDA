@@ -3,8 +3,11 @@
 # lvillasen@gmail.com
 # 3/26/2016
 # Licence: GPLv3
-# Usage: python GameOfLife.py n n_iter
-# where n is the board size and n_iter the number of iterations
+# Usage: python GameOfLife.py n n_iter m
+# where:
+#n is the board size 
+#n_iter is the initial number of iterations
+#m is equal to 1 to plot the board or 0 for no display output 
 import pycuda.driver as cuda
 import pycuda.tools
 import pycuda.autoinit
@@ -16,6 +19,7 @@ from pylab import cm as cm
 import matplotlib.pyplot as plt
 n=int(sys.argv[1])
 n_iter=int(sys.argv[2])
+m=int(sys.argv[3])
 n_block=16
 n_grid=int(n/n_block);
 n=n_block*n_grid;
@@ -61,20 +65,15 @@ for k in range(n_iter):
   func(C_gpu,M_gpu,block=(n_block,n_block,1),grid=(n_grid,n_grid,1))
   C_gpu, M_gpu = M_gpu, C_gpu
 print("%d live cells after %d iterations" %(np.sum(C_gpu.get()),n_iter))
-fig = plt.figure(figsize=(12,12))
-ax = fig.add_subplot(111)
-fig.suptitle("Conway's Game of Life Accelerated with PyCUDA")
-ax.set_title('Number of Iterations = %d'%(n_iter))
-myobj =plt.imshow(C_gpu.get(),origin='lower',cmap='Greys',  interpolation='nearest',vmin=0, vmax=1)
-plt.pause(.01)
-plt.draw()
-m=n_iter
-while True:
-    m+=1
-    func(C_gpu,M_gpu,block=(n_block,n_block,1),grid=(n_grid,n_grid,1))
-    C_gpu, M_gpu = M_gpu, C_gpu
-    myobj.set_data(C_gpu.get())
-    ax.set_title('Number of Iterations = %d'%(m))
-    plt.pause(.01)
-    plt.draw()
-
+if m==1:
+    fig = plt.figure(figsize=(12,12))
+    ax = fig.add_subplot(111)
+    fig.suptitle("Conway's Game of Life Accelerated with PyCUDA")
+    while m==1:
+      ax.set_title('Number of Iterations = %d'%(n_iter))
+      plt.imshow(C_gpu.get(),origin='lower',cmap='Greys',  interpolation='nearest',vmin=0, vmax=1)
+      plt.draw()
+      plt.pause(.01)
+      func(C_gpu,M_gpu,block=(n_block,n_block,1),grid=(n_grid,n_grid,1))
+      C_gpu, M_gpu = M_gpu, C_gpu
+      n_iter+=1
